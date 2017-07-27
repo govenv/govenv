@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Usage: govenv version-file-write <file> <version>
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+GOVENV_VERSION_FILE="$1"
+shift || true
+versions=("$@")
+
+if [ -z "$versions" ] || [ -z "$GOVENV_VERSION_FILE" ]; then
+  govenv-help --usage version-file-write >&2
+  exit 1
+fi
+
+# Make sure the specified version is installed.
+govenv-prefix "${versions[@]}" >/dev/null
+
+# Write the version out to disk.
+# Create an empty file. Using "rm" might cause a permission error.
+> "$GOVENV_VERSION_FILE"
+for version in "${versions[@]}"; do
+  echo "$version" >> "$GOVENV_VERSION_FILE"
+done

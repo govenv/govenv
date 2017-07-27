@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Summary: Show the current Go version
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+if [ -z "$GOVENV_VERSION" ]; then
+  GOVENV_VERSION_FILE="$(govenv-version-file)"
+  GOVENV_VERSION="$(govenv-version-file-read "$GOVENV_VERSION_FILE" || true)"
+fi
+
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`govenv-hooks version-name`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
+if [ -z "$GOVENV_VERSION" ] || [ "$GOVENV_VERSION" = "system" ]; then
+  echo "system"
+  exit
+fi
+
+version_exists() {
+  local version="$1"
+  [ -d "${GOVENV_ROOT}/versions/${version}" ]
+}
+
+versions=()
+OLDIFS="$IFS"
+{ IFS=:
+  any_not_installed=0
+  for version in ${GOVENV_VERSION}; do
+    if version_exists "$version" || [ "$version" = "system" ]; then
+      versions=("${versions[@]}" "${version}")
+    elif version_exists "${version#go-}"; then
+      versions=("${versions[@]}" "${version#go-}")
+    else
+      echo "govenv: version \`$version' is not installed (set by $(govenv-version-origin))" >&2
+      any_not_installed=1
+    fi
+  done
+}
+IFS="$OLDIFS"
+
+OLDIFS="$IFS"
+{ IFS=:
+  echo "${versions[*]}"
+}
+IFS="$OLDIFS"
+
+if [ "$any_not_installed" = 1 ]; then
+  exit 1
+fi

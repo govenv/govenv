@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Summary: List all Go versions that contain the given executable
+# Usage: govenv whence [--path] <command>
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  echo --path
+  exec govenv-shims --short
+fi
+
+if [ "$1" = "--path" ]; then
+  print_paths="1"
+  shift
+else
+  print_paths=""
+fi
+
+whence() {
+  local command="$1"
+  govenv-versions --bare | while read version; do
+    path="$(govenv-prefix "$version")/bin/${command}"
+    if [ -x "$path" ]; then
+      [ "$print_paths" ] && echo "$path" || echo "$version"
+    fi
+  done
+}
+
+GOVENV_COMMAND="$1"
+if [ -z "$GOVENV_COMMAND" ]; then
+  govenv-help --usage whence >&2
+  exit 1
+fi
+
+result="$(whence "$GOVENV_COMMAND")"
+[ -n "$result" ] && echo "$result"

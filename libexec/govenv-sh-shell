@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the shell-specific Go version
+#
+# Usage: govenv shell <version>
+#        govenv shell --unset
+#
+# Sets a shell-specific Go version by setting the `GOVENV_VERSION'
+# environment variable in your shell. This version overrides local
+# application-specific versions and the global version.
+#
+# <version> should be a string matching a Go version known to govenv.
+# The special version string `system' will use your default system Go.
+# Run `govenv versions' for a list of available Go versions.
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  echo --unset
+  echo system
+  exec govenv-versions --bare
+fi
+
+versions=("$@")
+shell="$(basename "${GOVENV_SHELL:-$SHELL}")"
+
+if [ -z "$versions" ]; then
+  if [ -z "$GOVENV_VERSION" ]; then
+    echo "govenv: no shell-specific version configured" >&2
+    exit 1
+  else
+    echo "echo \"\$GOVENV_VERSION\""
+    exit
+  fi
+fi
+
+if [ "$versions" = "--unset" ]; then
+  case "$shell" in
+  fish )
+    echo "set -e GOVENV_VERSION"
+    ;;
+  * )
+    echo "unset GOVENV_VERSION"
+    ;;
+  esac
+  exit
+fi
+
+# Make sure the specified version is installed.
+if govenv-prefix "${versions[@]}" >/dev/null; then
+  OLDIFS="$IFS"
+  IFS=: version="${versions[*]}"
+  IFS="$OLDIFS"
+  case "$shell" in
+  fish )
+    echo "set -gx GOVENV_VERSION \"${version}\""
+    ;;
+  * )
+    echo "export GOVENV_VERSION=\"${version}\""
+    ;;
+  esac
+else
+  echo "false"
+  exit 1
+fi

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# Summary: Run an executable with the selected Go version
+#
+# Usage: govenv exec <command> [arg1 arg2...]
+#
+# Runs an executable by first preparing PATH so that the selected
+# Go version's `bin' directory is at the front.
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  exec govenv-shims --short
+fi
+
+GOVENV_VERSION="$(govenv-version-name)"
+GOVENV_COMMAND="$1"
+
+if [ -z "$GOVENV_COMMAND" ]; then
+  govenv-help --usage exec >&2
+  exit 1
+fi
+
+export GOVENV_VERSION
+GOVENV_COMMAND_PATH="$(govenv-which "$GOVENV_COMMAND")"
+GOVENV_BIN_PATH="${GOVENV_COMMAND_PATH%/*}"
+
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`govenv-hooks exec`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
+shift 1
+# Go needs a GOROOT
+export GOROOT="$(govenv-prefix)/"
+export PATH="${GOVENV_BIN_PATH}:${GOROOT}/bin:${PATH}"
+exec -a "$GOVENV_COMMAND" "$GOVENV_COMMAND_PATH" "$@"

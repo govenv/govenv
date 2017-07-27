@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the global Go version
+#
+# Usage: govenv global <version>
+#
+# Sets the global Go version. You can override the global version at
+# any time by setting a directory-specific version with `govenv local'
+# or by setting the `GOVENV_VERSION' environment variable.
+#
+# <version> should be a string matching a Go version known to govenv.
+# The special version string `system' will use your default system Go.
+# Run `govenv versions' for a list of available Go versions.
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  echo system
+  exec govenv-versions --bare
+fi
+
+versions=("$@")
+GOVENV_VERSION_FILE="${GOVENV_ROOT}/version"
+
+if [ -n "$versions" ]; then
+  govenv-version-file-write "$GOVENV_VERSION_FILE" "${versions[@]}"
+else
+  OLDIFS="$IFS"
+  IFS=: versions=($(
+    govenv-version-file-read "$GOVENV_VERSION_FILE" ||
+    govenv-version-file-read "${GOVENV_ROOT}/global" ||
+    govenv-version-file-read "${GOVENV_ROOT}/default" ||
+    echo system
+  ))
+  IFS="$OLDIFS"
+  for version in "${versions[@]}"; do
+    echo "$version"
+  done
+fi

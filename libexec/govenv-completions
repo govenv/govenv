@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Usage: govenv completions <command> [arg1 arg2...]
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+COMMAND="$1"
+if [ -z "$COMMAND" ]; then
+  govenv-help --usage completions >&2
+  exit 1
+fi
+
+# Provide govenv completions
+if [ "$COMMAND" = "--complete" ]; then
+  exec govenv-commands
+fi
+
+COMMAND_PATH="$(command -v "govenv-$COMMAND" || command -v "govenv-sh-$COMMAND")"
+
+# --help is provided automatically
+echo --help
+
+if grep -iE "^([#%]|--|//) provide govenv completions" "$COMMAND_PATH" >/dev/null; then
+  shift
+  exec "$COMMAND_PATH" --complete "$@"
+fi

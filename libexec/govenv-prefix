@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Summary: Display prefix for a Go version
+# Usage: govenv prefix [<version>]
+#
+# Displays the directory where a Go version is installed. If no
+# version is given, `govenv prefix' displays the location of the
+# currently selected version.
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  echo system
+  exec govenv-versions --bare
+fi
+
+if [ -n "$1" ]; then
+  OLDIFS="$IFS"
+  { IFS=:
+    export GOVENV_VERSION="$*"
+  }
+  IFS="$OLDIFS"
+elif [ -z "$GOVENV_VERSION" ]; then
+  GOVENV_VERSION="$(govenv-version-name)"
+fi
+
+GOVENV_PREFIX_PATHS=()
+OLDIFS="$IFS"
+{ IFS=:
+  for version in ${GOVENV_VERSION}; do
+    if [ "$version" = "system" ]; then
+      if GO_PATH="$(GOVENV_VERSION="${version}" govenv-which go 2>/dev/null)"; then
+        GOVENV_PREFIX_PATH="${GO_PATH%/bin/*}"
+      else
+        echo "govenv: system version not found in PATH" >&2
+        exit 1
+      fi
+    else
+      GOVENV_PREFIX_PATH="${GOVENV_ROOT}/versions/${version}"
+    fi
+    if [ -d "$GOVENV_PREFIX_PATH" ]; then
+      GOVENV_PREFIX_PATHS=("${GOVENV_PREFIX_PATHS[@]}" "$GOVENV_PREFIX_PATH")
+    else
+      echo "govenv: version \`${version}' not installed" >&2
+      exit 1
+    fi
+  done
+}
+IFS="$OLDIFS"
+
+OLDIFS="$IFS"
+{ IFS=:
+  echo "${GOVENV_PREFIX_PATHS[*]}"
+}
+IFS="$OLDIFS"

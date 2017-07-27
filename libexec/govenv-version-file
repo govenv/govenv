@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Usage: govenv version-file [<dir>]
+# Summary: Detect the file that sets the current govenv version
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+target_dir="$1"
+
+find_local_version_file() {
+  local root="$1"
+  while ! [[ "$root" =~ ^//[^/]*$ ]]; do
+    if [ -e "${root}/.go-version" ]; then
+      echo "${root}/.go-version"
+      return 0
+    fi
+    [ -n "$root" ] || break
+    root="${root%/*}"
+  done
+  return 1
+}
+
+if [ -n "$target_dir" ]; then
+  find_local_version_file "$target_dir"
+else
+  find_local_version_file "$GOVENV_DIR" || {
+    [ "$GOVENV_DIR" != "$PWD" ] && find_local_version_file "$PWD"
+  } || echo "${GOVENV_ROOT}/version"
+fi

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the local application-specific Go version
+#
+# Usage: govenv local <version>
+#        govenv local --unset
+#
+# Sets the local application-specific Go version by writing the
+# version name to a file named `.go-version'.
+#
+# When you run a Go command, govenv will look for a `.go-version'
+# file in the current directory and each parent directory. If no such
+# file is found in the tree, govenv will use the global Go version
+# specified with `govenv global'. A version specified with the
+# `GOVENV_VERSION' environment variable takes precedence over local
+# and global versions.
+#
+# <version> should be a string matching a Go version known to govenv.
+# The special version string `system' will use your default system Go.
+# Run `govenv versions' for a list of available Go versions.
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+# Provide govenv completions
+if [ "$1" = "--complete" ]; then
+  echo --unset
+  echo system
+  exec govenv-versions --bare
+fi
+
+versions=("$@")
+
+if [ "$versions" = "--unset" ]; then
+  rm -f .go-version
+elif [ -n "$versions" ]; then
+  govenv-version-file-write .go-version "${versions[@]}"
+else
+  if version_file="$(govenv-version-file "$PWD")"; then
+    IFS=: versions=($(govenv-version-file-read "$version_file"))
+    for version in "${versions[@]}"; do
+      echo "$version"
+    done
+  else
+    echo "govenv: no local version configured for this directory" >&2
+    exit 1
+  fi
+fi
