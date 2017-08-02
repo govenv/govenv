@@ -1,13 +1,13 @@
 # go-build
 
-go-build is a [govenv](https://github.com/syndbg/govenv) plugin that
+go-build is a [govenv](https://github.com/govenv/govenv) plugin that
 provides a `govenv install` command to compile and install different versions
 of Go on UNIX-like systems.
 
 You can also use go-build without govenv in environments where you need
 precise control over Go version installation.
 
-See the [list of releases](https://github.com/syndbg/govenv/releases)
+See the [list of releases](https://github.com/govenv/govenv/releases)
 for changes in each version.
 
 
@@ -24,7 +24,7 @@ Installing go-build as a standalone program will give you access to the
 `go-build` command for precise control over Go version installation. If you
 have govenv installed, you will also be able to use the `govenv install` command.
 
-    git clone git://github.com/syndbg/govenv.git
+    git clone git://github.com/govenv/govenv.git
     cd govenv/plugins/go-build
     ./install.sh
 
@@ -54,7 +54,7 @@ Or, if you would like to install the latest development release:
 ## Usage
 
 Before you begin, you should ensure that your build environment has the proper
-system dependencies for compiling the wanted Go Version (see our [recommendations](https://github.com/syndbg/govenv/wiki#suggested-build-environment)).
+system dependencies for compiling the wanted Go Version (see our [recommendations](https://github.com/govenv/govenv/wiki#suggested-build-environment)).
 
 ### Using `govenv install` with govenv
 
@@ -92,10 +92,10 @@ Both `govenv install` and `go-build` accept a path to a custom definition file
 in place of a version name. Custom definitions let you develop and install
 versions of Golang that are not yet supported by go-build.
 
-See the [go-build built-in definitions](https://github.com/syndbg/govenv/tree/master/plugins/go-build/share/go-build) as a starting point for
+See the [go-build built-in definitions](https://github.com/govenv/govenv/tree/master/plugins/go-build/share/go-build) as a starting point for
 custom definition files.
 
-[definitions]: https://github.com/syndbg/govenv/tree/master/plugins/go-build/share/go-build
+[definitions]: https://github.com/govenv/govenv/tree/master/plugins/go-build/share/go-build
 
 ### Special environment variables
 
@@ -186,7 +186,7 @@ mirror and use official URLs instead. You can force go-build to bypass the
 mirror by setting the `GO_BUILD_SKIP_MIRROR` environment variable.
 
 The official go-build download mirror is provided by
-[GitHub Pages](http://syndbg.github.io/golangs/).
+[GitHub Pages](http://govenv.github.io/golangs/).
 
 ### Package download caching
 
@@ -212,10 +212,10 @@ variable when using `--keep` with `go-build`.
 
 ## Getting Help
 
-Please see the [govenv wiki](https://github.com/syndbg/govenv/wiki) for solutions to common problems.
+Please see the [govenv wiki](https://github.com/govenv/govenv/wiki) for solutions to common problems.
 
-[wiki]: https://github.com/syndbg/govenv/wiki
+[wiki]: https://github.com/govenv/govenv/wiki
 
 If you can't find an answer on the wiki, open an issue on the [issue
-tracker](https://github.com/syndbg/govenv/issues). Be sure to include
+tracker](https://github.com/govenv/govenv/issues). Be sure to include
 the full build log for build failures.

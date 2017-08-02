@@ -56,10 +56,10 @@ You can specify local Go version.
 # Showcase
 > govenv versions
   system
-  * 1.5.4 (set by /Users/syndbg/path/to/project/.go-version)
+  * 1.5.4 (set by /Users/govenv/path/to/project/.go-version)
 
 > govenv version
-1.5.4 (set by /Users/syndbg/path/to/project/.go-version)
+1.5.4 (set by /Users/govenv/path/to/project/.go-version)
 
 > go version
 
@@ -79,10 +79,10 @@ setting the `GOVENV_VERSION` environment variable.
 # Showcase
 > govenv versions
   system
-  * 1.5.4 (set by /Users/syndbg/.govenv/version)
+  * 1.5.4 (set by /Users/govenv/.govenv/version)
 
 > govenv version
-1.5.4 (set by /Users/syndbg/.govenv/version)
+1.5.4 (set by /Users/govenv/.govenv/version)
 
 > go version
 go version go1.5.4 darwin/amd64
@@ -176,7 +176,7 @@ how it was set.
 
 ```shell
 > govenv version
-1.5.4 (set by /Users/syndbg/.govenv/version)
+1.5.4 (set by /Users/govenv/.govenv/version)
 ```
 
 ## `govenv versions`
@@ -196,7 +196,7 @@ the currently active version.
   1.5.3
   1.5.4
   1.6.0
-* 1.6.1 (set by /Users/syndbg/.govenv/version)
+* 1.6.1 (set by /Users/govenv/.govenv/version)
   1.6.2
 ```
 
@@ -207,7 +207,7 @@ you run the given command.
 
 ```shell
 > govenv which gofmt
-/home/syndbg/.govenv/versions/1.6.1/bin/gofmt
+/home/govenv/.govenv/versions/1.6.1/bin/gofmt
 ```
 
 ## `govenv whence`

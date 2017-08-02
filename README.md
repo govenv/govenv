@@ -97,19 +97,19 @@ When you execute a shim, govenv determines which Go version to use by
 reading it from the following sources, in this order:
 
 1. The `GOVENV_VERSION` environment variable (if specified). You can use
-   the [`govenv shell`](https://github.com/syndbg/govenv/blob/master/COMMANDS.md#govenv-shell) command to set this environment
+   the [`govenv shell`](https://github.com/govenv/govenv/blob/master/COMMANDS.md#govenv-shell) command to set this environment
    variable in your current shell session.
 
 2. The application-specific `.go-version` file in the current
    directory (if present). You can modify the current directory's
-   `.go-version` file with the [`govenv local`](https://github.com/syndbg/govenv/blob/master/COMMANDS.md#govenv-local)
+   `.go-version` file with the [`govenv local`](https://github.com/govenv/govenv/blob/master/COMMANDS.md#govenv-local)
    command.
 
 3. The first `.go-version` file found (if any) by searching each parent
    directory, until reaching the root of your filesystem.
 
 4. The global `~/.govenv/version` file. You can modify this file using
-   the [`govenv global`](https://github.com/syndbg/govenv/blob/master/COMMANDS.md#govenv-global) command. If the global version
+   the [`govenv global`](https://github.com/govenv/govenv/blob/master/COMMANDS.md#govenv-global) command. If the global version
    file is not present, govenv assumes you want to use the "system"
    Go. (In other words, whatever version would run if govenv isn't present in
    `PATH`.)
@@ -146,7 +146,7 @@ easy to fork and contribute any changes back upstream.
 1. **Check out govenv where you want it installed.**
    A good place to choose is `$HOME/.govenv` (but you can install it somewhere else).
 
-        $ git clone https://github.com/syndbg/govenv.git ~/.govenv
+        $ git clone https://github.com/govenv/govenv.git ~/.govenv
 
 
 2. **Define environment variable `GOVENV_ROOT`** to point to the path where
@@ -314,7 +314,7 @@ name | default | description
 ## Development
 
 The govenv source code is [hosted on
-GitHub](https://github.com/syndbg/govenv).  It's clean, modular,
+GitHub](https://github.com/govenv/govenv).  It's clean, modular,
 and easy to understand, even if you're not a shell hacker. (I hope)
 
 Tests are executed using [Bats](https://github.com/sstephenson/bats):
@@ -323,4 +323,4 @@ Tests are executed using [Bats](https://github.com/sstephenson/bats):
     $ bats/test/<file>.bats
 
 Please feel free to submit pull requests and file bugs on the [issue
-tracker](https://github.com/syndbg/govenv/issues).
+tracker](https://github.com/govenv/govenv/issues).
