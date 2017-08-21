@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# Summary: Display real_prefix for a Python virtualenv version
+# Usage: govenv virtualenv-prefix [<virtualenv>]
+#
+
+set -e
+[ -n "$GOVENV_DEBUG" ] && set -x
+
+if [ -z "$GOVENV_ROOT" ]; then
+  GOVENV_ROOT="${HOME}/.govenv"
+fi
+
+remove_from_path() {
+  local path_to_remove="$1"
+  local path_before
+  local result=":$PATH:"
+  while [ "$path_before" != "$result" ]; do
+    path_before="$result"
+    result="${result//:$path_to_remove:/:}"
+  done
+  result="${result%:}"
+  echo "${result#:}"
+}
+
+resolve_link() {
+  $(type -p greadlink readlink | head -1) "$1"
+}
+
+abs_dirname() {
+  local cwd="$(pwd)"
+  local path="$1"
+
+  while [ -n "$path" ]; do
+    cd "${path%/*}"
+    local name="${path##*/}"
+    path="$(resolve_link "$name" || true)"
+  done
+
+  pwd
+  cd "$cwd"
+}
+
+if [ -n "$1" ]; then
+  versions=($@)
+  IFS=: GOVENV_VERSION="${versions[*]}"
+  export GOVENV_VERSION
+else
+  IFS=: versions=($(govenv-version-name))
+fi
+
+VIRTUALENV_PREFIX_PATHS=()
+for version in "${versions[@]}"; do
+  if [ "$version" = "system" ]; then
+    PATH="$(remove_from_path "${GOVENV_ROOT}/shims")"
+    GOVENV_COMMAND_PATH="$(command -v "go" || true)"
+    GOVENV_COMMAND_PATH="$(abs_dirname "${GOVENV_COMMAND_PATH}" 2>/dev/null)"
+    echo ${GOVENV_COMMAND_PATH%/bin}
+    exit 1
+  fi
+  GOVENV_PREFIX_PATH="$(govenv-prefix "${version}")"
+  if [ -f "${GOVENV_PREFIX_PATH}/govenv.cfg" ]; then
+    virtualenv_binpath="$(cut -b 1-1024 "${GOVENV_ROOT}/versions/${version}/govenv.cfg" | sed -n '/^ *home *= */s///p' || true)"
+    VIRTUALENV_PREFIX_PATH="${virtualenv_binpath%/bin}"
+    if [ -d "${VIRTUALENV_PREFIX_PATH}" ]; then
+      VIRTUALENV_PREFIX_PATHS=("${VIRTUALENV_PREFIX_PATHS[@]}" "${VIRTUALENV_PREFIX_PATH:-${GOVENV_PREFIX_PATH}}")
+    else
+      echo "govenv-virtualenv: version \`${version}' is not a virtualenv" 1>&2
+      exit 1
+    fi
+  else
+    echo "govenv-virtualenv: \`govenv' not found in version \`${version}'" 1>&2
+    exit 1
+  fi
+done
+
+IFS=: echo "${VIRTUALENV_PREFIX_PATHS[*]}"

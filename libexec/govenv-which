@@ -43,7 +43,8 @@ for version in "${versions[@]}"; do
     PATH="$(remove_from_path "${GOVENV_ROOT}/shims")"
     GOVENV_COMMAND_PATH="$(command -v "$GOVENV_COMMAND" || true)"
   else
-    GOVENV_COMMAND_PATH="${GOVENV_ROOT}/versions/${version}/bin/${GOVENV_COMMAND}"
+    GOVENV_GO_ROOT=$(govenv goroot)
+    GOVENV_COMMAND_PATH="${GOVENV_GO_ROOT}/bin/${GOVENV_COMMAND}"
   fi
   if [ -x "$GOVENV_COMMAND_PATH" ]; then
     break

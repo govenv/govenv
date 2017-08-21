@@ -35,6 +35,6 @@ done
 
 shift 1
 # Go needs a GOROOT
-export GOROOT="$(govenv-prefix)/"
+export GOROOT="$(govenv-goroot)/"
 export PATH="${GOVENV_BIN_PATH}:${GOROOT}/bin:${PATH}"
 exec -a "$GOVENV_COMMAND" "$GOVENV_COMMAND_PATH" "$@"
