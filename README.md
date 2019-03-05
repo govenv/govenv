@@ -1,2 +1,2 @@
 
-# GO virtualevv Management & Go Version Management
+# GO virtualenv Management & Go Version Management
