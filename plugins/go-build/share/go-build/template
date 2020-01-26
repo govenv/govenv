@@ -1,9 +1,9 @@
-install_darwin_64bit "Go Darwin 64bit <version>" "https://dl.google.com/go/<version>.darwin-amd64.tar.gz#<hash-value>"
+install_darwin_64bit "Go Darwin 64bit <version>" "https://dl.google.com/go/go<version>.darwin-amd64.tar.gz#<hash-value>"
 
-install_bsd_32bit "Go Freebsd 32bit <version>" "https://dl.google.com/go/<version>.freebsd-386.tar.gz#<hash-value>"
+install_bsd_32bit "Go Freebsd 32bit <version>" "https://dl.google.com/go/go<version>.freebsd-386.tar.gz#<hash-value>"
 
-install_bsd_64bit "Go Freebsd 64bit <version>" "https://dl.google.com/go/<version>.freebsd-amd64.tar.gz#<hash-value>"
+install_bsd_64bit "Go Freebsd 64bit <version>" "https://dl.google.com/go/go<version>.freebsd-amd64.tar.gz#<hash-value>"
 
-install_linux_32bit "Go Linux 32bit <version>" "https://dl.google.com/go/<version>.linux-386.tar.gz#<hash-value>"
+install_linux_32bit "Go Linux 32bit <version>" "https://dl.google.com/go/go<version>.linux-386.tar.gz#<hash-value>"
 
-install_linux_64bit "Go Linux 64bit <version>" "https://dl.google.com/go/<version>.linux-amd64.tar.gz#<hash-value>"
+install_linux_64bit "Go Linux 64bit <version>" "https://dl.google.com/go/go<version>.linux-amd64.tar.gz#<hash-value>"
